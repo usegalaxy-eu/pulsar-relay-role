@@ -1,0 +1,13 @@
+---
+pulsar_relay_version: "main"
+pulsar_relay_port: 9000
+pulsar_relay_user: ubuntu
+pulsar_relay_venv: /opt/pulsar-relay/venv
+pulsar_relay_jwt_secret: "change_me_in_production"
+pulsar_relay_admin_username: "admin"
+pulsar_relay_admin_password: "change_me_in_production"
+pulsar_relay_admin_email: "admin@example.com"
+pulsar_relay_storage_backend: "valkey"
+pulsar_relay_log_level: "INFO"
+pulsar_relay_valkey_host: "localhost"
+pulsar_relay_valkey_port: 6379

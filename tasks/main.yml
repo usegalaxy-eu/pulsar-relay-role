@@ -1,0 +1,44 @@
+---
+- name: Install Valkey via snap
+  community.general.snap:
+    name: valkey
+    channel: edge
+  when: pulsar_relay_storage_backend == "valkey"
+
+- name: Install Python3 and venv
+  apt:
+    name:
+      - python3
+      - python3-venv
+      - python3-pip
+    state: present
+    update_cache: yes
+
+- name: Create pulsar-relay venv directory
+  file:
+    path: "{{ pulsar_relay_venv }}"
+    state: directory
+    owner: "{{ pulsar_relay_user }}"
+    mode: "0755"
+
+- name: Install pulsar-relay from GitHub
+  pip:
+    name: "git+https://github.com/mvdbeek/pulsar-relay.git"
+    virtualenv: "{{ pulsar_relay_venv }}"
+    virtualenv_command: python3 -m venv
+  become_user: "{{ pulsar_relay_user }}"
+
+- name: Deploy systemd service
+  template:
+    src: pulsar-relay.service.j2
+    dest: /etc/systemd/system/pulsar-relay.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+
+- name: Enable and start pulsar-relay
+  systemd:
+    name: pulsar-relay
+    enabled: true
+    state: started

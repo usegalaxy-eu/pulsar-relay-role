@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: pulsar_relay
+  author: Dmitrijs Sizovs
+  description: Deploy pulsar-relay as a systemd service with a Valkey backend.
+  license: MIT
+  min_ansible_version: "2.12"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - galaxy
+    - pulsar
+    - hpc
+dependencies: []

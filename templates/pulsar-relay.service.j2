@@ -1,0 +1,20 @@
+[Unit]
+Description=Pulsar Relay
+After=network.target
+
+[Service]
+User={{ pulsar_relay_user }}
+Environment="PULSAR_JWT_SECRET_KEY={{ pulsar_relay_jwt_secret }}"
+Environment="PULSAR_BOOTSTRAP_ADMIN_USERNAME={{ pulsar_relay_admin_username }}"
+Environment="PULSAR_BOOTSTRAP_ADMIN_PASSWORD={{ pulsar_relay_admin_password }}"
+Environment="PULSAR_BOOTSTRAP_ADMIN_EMAIL={{ pulsar_relay_admin_email }}"
+Environment="PULSAR_STORAGE_BACKEND={{ pulsar_relay_storage_backend }}"
+Environment="PULSAR_VALKEY_HOST={{ pulsar_relay_valkey_host }}"
+Environment="PULSAR_VALKEY_PORT={{ pulsar_relay_valkey_port }}"
+Environment="PULSAR_LOG_LEVEL={{ pulsar_relay_log_level }}"
+ExecStart={{ pulsar_relay_venv }}/bin/uvicorn pulsar_relay.main:app --host 0.0.0.0 --port {{ pulsar_relay_port }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
