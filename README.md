@@ -30,7 +30,7 @@ See `defaults/main.yml`. Override at least the secrets:
 | `pulsar_relay_valkey_host` | `localhost` | |
 | `pulsar_relay_valkey_port` | `6379` | |
 
-> Supply real secrets via the vault / extra-vars — never commit them.
+> Supply real secrets via the vault / extra-vars.
 
 ## Example
 
@@ -43,7 +43,3 @@ See `defaults/main.yml`. Override at least the secrets:
         pulsar_relay_jwt_secret: "{{ vault_pulsar_relay_jwt_secret }}"
         pulsar_relay_admin_password: "{{ vault_pulsar_relay_admin_password }}"
 ```
-
-## Status
-
-Experimental — pin a pulsar-relay version known to work with your environment.
