@@ -14,5 +14,5 @@ pulsar_relay_valkey_port: 6379
 
 # --- v0.2.0 hardening (override secrets at deploy time) ---
 pulsar_relay_valkey_password: "CHANGE_ME"
-pulsar_relay_allowed_origins: "https://usegalaxy.eu"
-pulsar_relay_trusted_hosts: "*"
+pulsar_relay_allowed_origins: '["https://usegalaxy.eu"]'
+pulsar_relay_trusted_hosts: '["*"]'
