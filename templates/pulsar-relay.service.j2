@@ -11,6 +11,9 @@ Environment="PULSAR_BOOTSTRAP_ADMIN_EMAIL={{ pulsar_relay_admin_email }}"
 Environment="PULSAR_STORAGE_BACKEND={{ pulsar_relay_storage_backend }}"
 Environment="PULSAR_VALKEY_HOST={{ pulsar_relay_valkey_host }}"
 Environment="PULSAR_VALKEY_PORT={{ pulsar_relay_valkey_port }}"
+Environment="PULSAR_VALKEY_PASSWORD={{ pulsar_relay_valkey_password }}"
+Environment="PULSAR_ALLOWED_ORIGINS={{ pulsar_relay_allowed_origins }}"
+Environment="PULSAR_TRUSTED_HOSTS={{ pulsar_relay_trusted_hosts }}"
 Environment="PULSAR_LOG_LEVEL={{ pulsar_relay_log_level }}"
 ExecStart={{ pulsar_relay_venv }}/bin/uvicorn pulsar_relay.main:app --host 0.0.0.0 --port {{ pulsar_relay_port }}
 Restart=always

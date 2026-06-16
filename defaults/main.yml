@@ -1,5 +1,5 @@
 ---
-pulsar_relay_version: "main"
+pulsar_relay_version: "v0.2.0"
 pulsar_relay_port: 9000
 pulsar_relay_user: ubuntu
 pulsar_relay_venv: /opt/pulsar-relay/venv
@@ -11,3 +11,8 @@ pulsar_relay_storage_backend: "valkey"
 pulsar_relay_log_level: "INFO"
 pulsar_relay_valkey_host: "localhost"
 pulsar_relay_valkey_port: 6379
+
+# --- v0.2.0 hardening (override secrets at deploy time) ---
+pulsar_relay_valkey_password: "CHANGE_ME"
+pulsar_relay_allowed_origins: "https://usegalaxy.eu"
+pulsar_relay_trusted_hosts: "*"

@@ -1,8 +1,27 @@
 ---
-- name: Install Valkey via snap
-  community.general.snap:
-    name: valkey
-    channel: edge
+- name: Install redis-server (Valkey-compatible backend)
+  apt:
+    name: redis-server
+    state: present
+    update_cache: yes
+  when: pulsar_relay_storage_backend == "valkey"
+
+- name: Configure redis password and localhost bind
+  blockinfile:
+    path: /etc/redis/redis.conf
+    marker: "# {mark} pulsar-relay managed"
+    block: |
+      bind 127.0.0.1
+      protected-mode yes
+      requirepass {{ pulsar_relay_valkey_password }}
+  notify: restart redis
+  when: pulsar_relay_storage_backend == "valkey"
+
+- name: Enable and start redis
+  systemd:
+    name: redis-server
+    enabled: true
+    state: started
   when: pulsar_relay_storage_backend == "valkey"
 
 - name: Install Python3 and venv
@@ -23,7 +42,7 @@
 
 - name: Install pulsar-relay from GitHub
   pip:
-    name: "git+https://github.com/mvdbeek/pulsar-relay.git"
+    name: "git+https://github.com/galaxyproject/pulsar-relay.git@{{ pulsar_relay_version }}"
     virtualenv: "{{ pulsar_relay_venv }}"
     virtualenv_command: python3 -m venv
   become_user: "{{ pulsar_relay_user }}"
