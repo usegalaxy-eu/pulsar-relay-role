@@ -7,3 +7,9 @@
   systemd:
     name: redis-server
     state: restarted
+
+- name: restart pulsar-relay
+  systemd:
+    name: pulsar-relay
+    state: restarted
+    daemon_reload: true

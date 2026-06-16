@@ -47,6 +47,17 @@
     virtualenv_command: python3 -m venv
   become_user: "{{ pulsar_relay_user }}"
 
+- name: Deploy pulsar-relay environment file
+  template:
+    src: pulsar-relay.env.j2
+    dest: /etc/pulsar-relay.env
+    owner: root
+    group: root
+    mode: "0600"
+  notify:
+    - reload systemd
+    - restart pulsar-relay
+
 - name: Deploy systemd service
   template:
     src: pulsar-relay.service.j2
