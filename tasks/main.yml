@@ -33,7 +33,10 @@
     that:
       - "_redis_version_out.stdout is regex('v=([7-9]|[1-9][0-9])\\.')"
     fail_msg: "redis is too old ({{ _redis_version_out.stdout }}). relay 0.2.x requires redis >= 6.2. Check the redislabs PPA installed correctly."
-  when: pulsar_relay_storage_backend == "valkey"
+  when:
+    - pulsar_relay_storage_backend == "valkey"
+    - _redis_version_out.stdout is defined
+    - _redis_version_out.stdout | length > 0
 
 - name: Configure redis password and localhost bind
   blockinfile:
