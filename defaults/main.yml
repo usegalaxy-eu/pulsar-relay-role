@@ -1,5 +1,5 @@
 ---
-pulsar_relay_version: "v0.2.0"
+pulsar_relay_version: "v0.2.1"
 pulsar_relay_port: 9000
 pulsar_relay_user: ubuntu
 pulsar_relay_venv: /opt/pulsar-relay/venv
