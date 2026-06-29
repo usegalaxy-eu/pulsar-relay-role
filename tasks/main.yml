@@ -1,62 +1,9 @@
 ---
-- name: Stop and disable snap valkey if present (frees port 6379 for redis)
-  shell: |
-    if snap list valkey >/dev/null 2>&1; then
-      snap stop valkey || true
-      snap disable valkey || true
-    fi
-  changed_when: false
+- name: Set up storage backend (OS-specific)
+  include_tasks: "backend-{{ ansible_os_family | lower }}.yml"
   when: pulsar_relay_storage_backend == "valkey"
 
-- name: Add redislabs PPA (provides redis >= 7; Ubuntu apt ships 6.0.x which lacks XRANGE exclusive bounds needed by relay 0.2.x)
-  apt_repository:
-    repo: "ppa:redislabs/redis"
-    state: present
-    update_cache: yes
-  when: pulsar_relay_storage_backend == "valkey"
-
-- name: Install redis-server (>= 7, from redislabs PPA)
-  apt:
-    name: redis-server
-    state: latest
-    update_cache: yes
-  when: pulsar_relay_storage_backend == "valkey"
-
-- name: Get installed redis version
-  command: redis-server --version
-  register: _redis_version_out
-  changed_when: false
-  when: pulsar_relay_storage_backend == "valkey"
-
-- name: Assert redis >= 7 (relay 0.2.x needs XRANGE exclusive bounds, added in redis 6.2)
-  assert:
-    that:
-      - "_redis_version_out.stdout is regex('v=([7-9]|[1-9][0-9])\\.')"
-    fail_msg: "redis is too old ({{ _redis_version_out.stdout }}). relay 0.2.x requires redis >= 6.2. Check the redislabs PPA installed correctly."
-  when:
-    - pulsar_relay_storage_backend == "valkey"
-    - _redis_version_out.stdout is defined
-    - _redis_version_out.stdout | length > 0
-
-- name: Configure redis password and localhost bind
-  blockinfile:
-    path: /etc/redis/redis.conf
-    marker: "# {mark} pulsar-relay managed"
-    block: |
-      bind 127.0.0.1
-      protected-mode yes
-      requirepass {{ pulsar_relay_valkey_password }}
-  notify: restart redis
-  when: pulsar_relay_storage_backend == "valkey"
-
-- name: Enable and start redis
-  systemd:
-    name: redis-server
-    enabled: true
-    state: started
-  when: pulsar_relay_storage_backend == "valkey"
-
-- name: Install Python3 and venv
+- name: Install Python3 and venv (Debian/Ubuntu)
   apt:
     name:
       - python3
@@ -64,6 +11,16 @@
       - python3-pip
     state: present
     update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install Python3 and pip (RedHat/Rocky)
+  dnf:
+    name:
+      - python3
+      - python3-pip
+      - git
+    state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Create pulsar-relay venv directory
   file:

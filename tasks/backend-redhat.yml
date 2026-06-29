@@ -1,0 +1,23 @@
+---
+# Rocky/RHEL 10 ships Valkey 8.x in AppStream (modern, has XRANGE exclusive
+# bounds). No PPA/snap needed. Verified on Rocky Linux 10.2 + Valkey 8.0.9.
+- name: Install valkey (from AppStream)
+  dnf:
+    name: valkey
+    state: present
+
+- name: Configure valkey password and localhost bind
+  blockinfile:
+    path: /etc/valkey/valkey.conf
+    marker: "# {mark} pulsar-relay managed"
+    block: |
+      bind 127.0.0.1
+      protected-mode yes
+      requirepass {{ pulsar_relay_valkey_password }}
+  notify: restart valkey
+
+- name: Enable and start valkey
+  systemd:
+    name: valkey
+    enabled: true
+    state: started
